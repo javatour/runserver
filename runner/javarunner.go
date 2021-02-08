@@ -7,43 +7,44 @@ import (
 	"os/exec"
 )
 
-// JavaExecutor is the struct of java code
-type JavaExecutor struct {
-	Text     string
-	Filename string
-}
+func (r CodeFile) javaRun(path string) string {
+	//@dev 변경 예정 -> context사용해 무한루프는 강제 종료하도록 변경하고, 해당 부분에서 처리예정
+	defer os.Remove("workspace/" + path)
+	defer os.Remove("workspace/" + path + "/" + r.Filename + ".java")
+	defer os.Remove("workspace/" + path + "/" + r.Filename + ".class")
 
-func (r *JavaExecutor) javaRun() string {
-	defer os.Remove("workspace/" + r.Filename + ".java")
-	defer os.Remove("workspace/" + r.Filename + ".class")
 	dir, _ := os.Getwd()
-	cmd := exec.Command("java", r.Filename)
-	cmd.Dir = dir + "/workspace"
+	cmd := exec.Command("java", "-cp", ".", r.Filename)
+	cmd.Dir = dir + "/workspace/" + path
 	output, _ := cmd.CombinedOutput()
-	fmt.Println(string(output))
 	return string(output)
 }
 
-func (r *JavaExecutor) javaFilemaker() {
-	ioutil.WriteFile("./workspace/"+r.Filename+".java", []byte(r.Text), 0644)
+func (r CodeFile) javaFilemaker(path string) {
+	dir, _ := os.Getwd()
+	cmd := exec.Command("mkdir", path)
+	cmd.Dir = dir + "/workspace"
+	cmd.CombinedOutput()
+	ioutil.WriteFile("./workspace/"+path+"/"+r.Filename+".java", []byte(r.Text), 0644)
 }
 
-func (r *JavaExecutor) javaBuild() string {
+func (r CodeFile) javaBuild(path string) string {
 	dir, _ := os.Getwd()
 	cmd := exec.Command("javac", r.Filename+".java")
-	cmd.Dir = dir + "/workspace"
+	cmd.Dir = dir + "/workspace/" + path
 	output, _ := cmd.CombinedOutput()
 	return string(output)
 }
 
-// JavaRunner : return string about result of your java program
-func (r *JavaExecutor) JavaRunner() (result string) {
+// Run : return string about result of your java program
+// 에러 추가해야함
+func (r CodeFile) javaExecutor(path string) (string, error) {
 	fmt.Println("Receive")
-	r.javaFilemaker()
+	r.javaFilemaker(path)
 	fmt.Println("File saved by", r.Filename)
-	r.javaBuild()
+	r.javaBuild(path)
 	fmt.Println("Build finished")
-	result = r.javaRun()
+	result := r.javaRun(path)
 	fmt.Println("Finished")
-	return
+	return result, nil
 }
