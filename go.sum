@@ -18,3 +18,5 @@ github.com/javatour/runner v0.0.0-20210206152255-d9cf63003bb0 h1:1a4ZnJnL0x2wLj5
 github.com/javatour/runner v0.0.0-20210206152255-d9cf63003bb0/go.mod h1:W3niWZ408gFkHDCVKycOFvZ83SoKxYErl6zunN9gv3Y=
 github.com/javatour/runner v0.0.0-20210206160925-39ad6f1af00f h1:BMs4M5YdXQXf4YIoqrMNTVYOvj0PDk2PR3vGGMsfTXs=
 github.com/javatour/runner v0.0.0-20210206160925-39ad6f1af00f/go.mod h1:W3niWZ408gFkHDCVKycOFvZ83SoKxYErl6zunN9gv3Y=
+github.com/javatour/runner v0.0.0-20210206163806-7ff5026da8e5 h1:OyFkaBwvxcMROJBTdrkSuy6INc0qgUIUOfBTV8/mhtc=
+github.com/javatour/runner v0.0.0-20210206163806-7ff5026da8e5/go.mod h1:W3niWZ408gFkHDCVKycOFvZ83SoKxYErl6zunN9gv3Y=
