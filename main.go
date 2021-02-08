@@ -7,7 +7,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/core/runner"
+	"github.com/runserver/runner"
 )
 
 func javaHandler(w http.ResponseWriter, r *http.Request) {
