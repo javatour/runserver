@@ -1,6 +1,6 @@
 package runner
 
-//Python: is the way
+//Pythonrunner is the way
 func Pythonrunner() {
 
 }

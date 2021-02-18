@@ -9,7 +9,7 @@ var (
 )
 
 type Runner interface {
-	Run() (string, error)
+	Run(path string) (string, error)
 }
 
 type CodeFile struct {
@@ -21,6 +21,7 @@ type CodeFile struct {
 	Language string
 }
 
+// Run is the method for running programming source
 func (target CodeFile) Run(path string) (string, error) {
 	switch target.Language {
 	case "java":

@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/javatour/runserver/runner"
+	"github.com/javatour/runserver/worker"
 )
 
 type Result struct {
@@ -27,11 +28,21 @@ var (
 // context를 사용하여, 무한루프도는 고루틴 강제 종료 예정
 // 예외 처리를 조금 더 깔끔히 변경 예정
 func handler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
+	w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
+	if r.Method == "OPTIONS" {
+		return
+	}
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	code := new(runner.CodeFile)
 	err := json.NewDecoder(r.Body).Decode(&code)
 	if err != nil {
-		log.Fatal(err)
+		fmt.Println(err)
+		fmt.Fprintf(w, "%s", "No Code")
+		return
 	}
+	fmt.Println(r.Body)
 	ch := make(chan Result)
 	go func(code runner.CodeFile) {
 		m.Lock()
@@ -45,7 +56,8 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		result, err := t.result, t.err
 		fmt.Println(result)
 		if err != nil {
-			log.Fatal(err)
+			fmt.Println(err)
+			w.WriteHeader(http.StatusOK)
 			fmt.Fprintf(w, "%s", html.EscapeString(err.Error()))
 		}
 		fmt.Fprintf(w, "%s", html.EscapeString(result))
@@ -64,6 +76,11 @@ func handler(w http.ResponseWriter, r *http.Request) {
 // 해당 처리가 늦게 되어 타임아웃의 가능성이 존재
 
 func main() {
-	http.HandleFunc("/code", handler)
+	workers, err := worker.MakeWorkers()
+	if err != nil {
+		log.Fatal("do not use this program now. your server already busy")
+	}
+	workers.WorkStart()
+	http.HandleFunc("/code", workers.ServeHTTP)
 	log.Fatal(http.ListenAndServe(":3001", nil))
 }
