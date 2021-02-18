@@ -1,19 +1,13 @@
 package main
 
 import (
-	"encoding/json"
-	"fmt"
-	"html"
 	"log"
 	"net/http"
-	"strconv"
-	"sync"
-	"time"
 
-	"github.com/javatour/runserver/runner"
 	"github.com/javatour/runserver/worker"
 )
 
+/*
 type Result struct {
 	result string
 	err    error
@@ -23,6 +17,7 @@ var (
 	m   sync.Mutex
 	num int
 )
+
 
 // @dev 함수를 나누거나 파일을 나눌 예정
 // context를 사용하여, 무한루프도는 고루틴 강제 종료 예정
@@ -66,7 +61,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "%s", html.EscapeString("Time out"))
 	}
 }
-
+*/
 // @dev
 // 큐 구조로 변경할 예정
 // ListenAndServe가 고루틴으로 구현되어 있으므로,
