@@ -1,6 +1,12 @@
 package runner
 
-import "errors"
+import (
+	"errors"
+	"fmt"
+	"io/ioutil"
+	"os"
+	"os/exec"
+)
 
 var (
 	NoCompilerError = errors.New("Server does not have the compiler")
@@ -21,6 +27,18 @@ type CodeFile struct {
 	Language string
 }
 
+func (target CodeFile) filemaker(path string, lang string) error {
+	dir, err := os.Getwd()
+	if err != nil {
+		return err
+	}
+	cmd := exec.Command("mkdir", path)
+	cmd.Dir = dir + "/workspace"
+	cmd.CombinedOutput()
+	ioutil.WriteFile("./workspace/"+path+"/"+target.Filename+"."+lang, []byte(target.Text), 0644)
+	return nil
+}
+
 // Run is the method for running programming source
 func (target CodeFile) Run(path string) (string, error) {
 	switch target.Language {
@@ -31,9 +49,18 @@ func (target CodeFile) Run(path string) (string, error) {
 		}
 		return result, nil
 	case "python":
-		return "", NoLanguageError
+		result, err := target.pythonExecutor(path)
+		if err != nil {
+			return result, err
+		}
+		return result, nil
 	case "cplusplus":
-		return "", NoLanguageError
+		result, err := target.cplusExecutor(path)
+		fmt.Println(result, err)
+		if err != nil {
+			return result, err
+		}
+		return result, nil
 	default:
 		return "", NoLanguageError
 	}

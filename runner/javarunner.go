@@ -1,14 +1,15 @@
 package runner
 
 import (
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"os"
 	"os/exec"
+	"time"
 )
 
 func (r CodeFile) javaRun(path string) (string, error) {
-	//@dev 변경 예정 -> context사용해 무한루프는 강제 종료하도록 변경하고, 해당 부분에서 처리예정
 	defer os.Remove("workspace/" + path)
 	defer os.Remove("workspace/" + path + "/" + r.Filename + ".java")
 	defer os.Remove("workspace/" + path + "/" + r.Filename + ".class")
@@ -19,8 +20,18 @@ func (r CodeFile) javaRun(path string) (string, error) {
 	}
 	cmd := exec.Command("java", "-cp", ".", r.Filename)
 	cmd.Dir = dir + "/workspace/" + path
-	output, _ := cmd.CombinedOutput()
-	return string(output), nil
+	resultChan := make(chan string)
+	go func() {
+		output, _ := cmd.CombinedOutput()
+		resultChan <- string(output)
+	}()
+	select {
+	case result := <-resultChan:
+		return result, nil
+	case <-time.After(5 * time.Second):
+		cmd.Process.Kill()
+		return "", errors.New("Infinite")
+	}
 }
 
 func (r CodeFile) javaFilemaker(path string) error {

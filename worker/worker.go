@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
-	"time"
 
 	"github.com/javatour/runserver/runner"
 )
@@ -41,27 +40,23 @@ type Result struct {
 }
 
 func (w Worker) Start() {
+	var n = 0
 	go func() {
 		for {
 			w.WorkerChannel <- w.Channel
-			fmt.Println("Worker", w.ID, "takes job!")
 			job := <-w.Channel
+			fmt.Println("[ Worker", w.ID, "] 가 일을 수주해 갔습니다!")
+			fmt.Println("[ Worker", w.ID, "] 현재 워커가 메모리 누수를 일으키는 숫자는", n, "입니다.")
 			id := w.ID
 			path := strconv.Itoa(id)
-			tempChanel := make(chan Result)
-			go func() {
-				result, err := job.Code.Run(path)
-				tempChanel <- Result{result, err}
-			}()
-			select {
-			case success := <-tempChanel:
-				fmt.Println("Worker", w.ID, "finished job!")
-				fmt.Println(success.result)
-				job.End <- success
-			case <-time.After(10 * time.Second):
-				fmt.Println("누군가.. 이걸로 비트코인 채굴이라도 하나보다.")
-				job.End <- Result{"", errors.New("무한루프 금지!!")}
-
+			result, err := job.Code.Run(path)
+			if err != nil {
+				fmt.Println("[ Worker", w.ID, "] 가 받은 일이 에러일 가능성이 높습니다. 종료!.")
+				job.End <- Result{"", errors.New("에러!!")}
+			} else {
+				fmt.Println("[ Worker", w.ID, "] 가 일을 마쳤습니다.")
+				fmt.Println(result)
+				job.End <- Result{result, nil}
 			}
 		}
 	}()

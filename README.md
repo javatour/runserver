@@ -17,7 +17,7 @@ CodeRunner
 ----------------
 
 * For easy installation, please use docker
-* If you installed Go already, just execute main by "./main"
+* If you do not want to install go, just execute main by "./main"
 
 
 
@@ -77,6 +77,8 @@ and will be support Language Version
 ### Supported Language
 ```
 java
+c++
+python
 ```
 
 
