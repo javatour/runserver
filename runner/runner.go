@@ -2,7 +2,6 @@ package runner
 
 import (
 	"errors"
-	"fmt"
 	"io/ioutil"
 	"os"
 	"os/exec"
@@ -56,7 +55,6 @@ func (target CodeFile) Run(path string) (string, error) {
 		return result, nil
 	case "cplusplus":
 		result, err := target.cplusExecutor(path)
-		fmt.Println(result, err)
 		if err != nil {
 			return result, err
 		}
