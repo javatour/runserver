@@ -55,7 +55,6 @@ func (w Worker) Start() {
 				job.End <- Result{"", errors.New("에러!!")}
 			} else {
 				fmt.Println("[ Worker", w.ID, "] 가 일을 마쳤습니다.")
-				fmt.Println(result)
 				job.End <- Result{result, nil}
 			}
 		}
