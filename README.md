@@ -19,8 +19,10 @@ Installation
 For using a server
 > git clone https://github.com/javatour/runserver.git
 
+
 For using a package
 > go get github.com/javatour/runserver
+
 
 
 
@@ -55,6 +57,10 @@ Usage
 --------
 
 ### Using package
+Need to install Python / JRE / GCC<br/>
+Please use it by docker
+
+> Make directory "workspace" in your project root
 
 ```go
 import (
