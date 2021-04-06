@@ -34,6 +34,7 @@ Build
 
 * By using docker
 ```
+make build
 make docker V={put tag}
 docker run -i -p 3001:3001 runserver:{tag}
 ```
