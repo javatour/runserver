@@ -99,9 +99,9 @@ python
 Architecture
 ------------
 
-<img src="image/worker.JPG" width="500">
+<img src="image/worker.JPG" width="700">
 
 Execution
 ---------
 
-<img src="./image/example.PN" width="500">
+<img src="./image/example.PNG" width="500">
