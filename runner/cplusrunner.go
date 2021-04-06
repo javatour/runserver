@@ -8,6 +8,10 @@ import (
 	"time"
 )
 
+// cplusrunner.go 는 c++ 파일을 생성하고, 빌드하고, 실행하는 함수들의 집합입니다.
+// 패키지 내부의 함수로 External interface는 runner.go 에만 있습니다.
+
+
 func (r CodeFile) cplusRun(path string) (string, error) {
 	defer os.Remove("workspace/" + path)
 	defer os.Remove("workspace/" + path + "/" + r.Filename + ".cpp")
@@ -51,20 +55,16 @@ func (r CodeFile) cplusBuild(path string) error {
 
 func (r CodeFile) cplusExecutor(path string) (string, error) {
 	err := r.filemaker(path, "cpp")
-	fmt.Println("here")
 	if err != nil {
 		return "", err
 	}
-	fmt.Println("here2")
 	err = r.cplusBuild(path)
 	if err != nil {
 		return "", err
 	}
-	fmt.Println("here3")
 	result, err := r.cplusRun(path)
 	if err != nil {
 		return "", err
 	}
-	fmt.Println("here4")
 	return result, nil
 }

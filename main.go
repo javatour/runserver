@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 
@@ -12,6 +13,7 @@ func main() {
 	if err != nil {
 		log.Fatal("do not use this program now. your server already busy")
 	}
+	fmt.Println("Ok. We start to work since now")
 	workers.WorkStart()
 	http.HandleFunc("/code", workers.ServeHTTP)
 	log.Fatal(http.ListenAndServe(":3001", nil))

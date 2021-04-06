@@ -1,32 +1,34 @@
 CodeRunner
 ==========
 
-#### Server for running code. It is a micro system for supply result of running code.
-#### This micro server can be use in entire system of developer community, education tool of programmingand so on.
+#### Remote code launcher.
+#### This micro server can be use for developer community, education tool of programming and so on.
 
-#### 프로그램 실행 서버입니다. HTTP통신을 통하여 코드를 입력으로 받아, 해당 코드를 실행하고 결과값을 돌려주는 Task를 담당합니다. 고객의 코드의 실행이 필요한 교육 도구, 개발자 커뮤니티 등 웹 기반의 프로젝트의 서버와 HTTP 통신을 통하여 코드를 실행하고 결과값을 줄 것입니다.
+------------------------------
 
-#### 고루틴을 통하여 병렬 수행을 하고, 컨테이너로써 배포하여 확장성을 지닙니다. 다수의 컨테이너로 배포할 경우 컨테이너 오케스트레이션 도구를 사용하시는 것이 좋습니다.
-
-
-
-
+#### Worker pool architecture를 갖는 Remote code launcher 입니다.
+#### 패키지로 이용하거나, Docker를 통해 MSA에서 Code 실행을 담당하는 컨테이너로 운용할 수 있습니다.
+#### Timeout은 무한루프 방지를 위해 10초로 제한되어 있습니다. Worker routine은 CPU개수로 제한됩니다.
 
 
-1. Installation
+<br/><br/><br/>
+
+Installation
 ----------------
 
-* For easy installation, please use docker
-* If you do not want to install go, just execute main by "./main"
+For using a server
+> git clone https://github.com/javatour/runserver.git
+
+For using a package
+> go get github.com/javatour/runserver
 
 
 
+<br/><br/><br/>
 
 
-
-2. Build
+Build
 --------
-
 
 * By using docker
 ```
@@ -35,28 +37,47 @@ docker run -i -p 3001:3001 runserver:{tag}
 ```
 
 
-
 * By using go build
 
 ```
 make build
 ```
 
+* Just run
 
+```
+go run main.go
+```
 
+<br/><br/><br/>
 
-
-
-3. Usage
+Usage
 --------
+
+### Using package
+
+```go
+import (
+    "log"
+    "net/http"
+    
+    "github.com/javatour/runserver/worker"
+)
+
+workers, err := worker.MakeWorkers()
+if err != nil {
+    log.Fatal("do not use this program now. your server already busy")
+}
+workers.WorkStart()
+http.HandleFunc("/code", workers.ServeHTTP)
+```
+
+### Using server
 
 Send post request to under point
 ```
 http://{hostname}:3001/code
-or
-https://{hostname}:3001/code
 ```
-
 
 ```
 POST json {
@@ -66,21 +87,25 @@ POST json {
 }
 ```
 
+Supported Language
+--------
 
-Now only support java, but will support cplusplus, python, javascript.
-and will be support Language Version
-
-
-
-
-
-### Supported Language
 ```
 java
 c++
 python
 ```
 
+Architecture
+------------
+
+![<img src="image/worker.JPG" width="200" />](image/worker.JPG)
+
+<img src="image/worker.JPG" width="200">
+
+Execution
+---------
+
+![<img src="./image/example.PNG" width="200" />](./image/example.PNG)
 
 
-made by suhwanggyu

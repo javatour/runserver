@@ -4,14 +4,15 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"runtime"
 	"strconv"
 
 	"github.com/javatour/runserver/runner"
 )
 
-const (
+var (
 	Maxtime   = 10
-	MaxWorker = 4
+	MaxWorker = runtime.NumCPU()
 )
 
 type Job struct {
@@ -29,7 +30,6 @@ type Worker struct {
 // Workers 는 Worker들에게 일을 부여하는
 // 채널로 구성됩니다.
 // End는 한 일을 돌려줘야 하는 채널이 정해져 있습니다.
-
 type Workers struct {
 	Do chan Job
 }
@@ -39,7 +39,7 @@ type Result struct {
 	err    error
 }
 
-func (w Worker) Start() {
+func (w Worker) start() {
 	var n = 0
 	go func() {
 		for {
@@ -61,11 +61,14 @@ func (w Worker) Start() {
 	}()
 }
 
+// WorkStart() 는 구체적인 worker들을 생성하고, 일을 할 수 있는 준비상태로 변환하고
+// 쉬고있는 [Job 채널]을 전송하는 채널을 통해 worker를 관리합니다.
 func (w Workers) WorkStart() {
 	WorkerChannel := make(chan chan Job)
+	fmt.Println("You hire " + strconv.Itoa(MaxWorker) + " employees")
 	for i := 0; i < MaxWorker; i++ {
 		worker := Worker{i, WorkerChannel, make(chan Job)}
-		worker.Start()
+		worker.start()
 	}
 	go func() {
 		for {
@@ -76,9 +79,10 @@ func (w Workers) WorkStart() {
 	}()
 }
 
+// MakeWorkers() 는 일을 공급하는 채널을 초기화 합니다.
 func MakeWorkers() (Workers, error) {
-	dochannel := make(chan Job)
-	return Workers{dochannel}, nil
+	employeeChannel := make(chan Job)
+	return Workers{employeeChannel}, nil
 }
 
 func (wk *Workers) ServeHTTP(w http.ResponseWriter, r *http.Request) {
