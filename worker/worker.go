@@ -26,7 +26,7 @@ type Worker struct {
 	Channel       chan Job
 }
 
-// Wokers 는 Worker들에게 일을 부여하는
+// Workers 는 Worker들에게 일을 부여하는
 // 채널로 구성됩니다.
 // End는 한 일을 돌려줘야 하는 채널이 정해져 있습니다.
 
