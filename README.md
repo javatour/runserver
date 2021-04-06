@@ -99,13 +99,9 @@ python
 Architecture
 ------------
 
-![<img src="image/worker.JPG" width="200" />](image/worker.JPG)
-
-<img src="image/worker.JPG" width="200">
+<img src="image/worker.JPG" width="500">
 
 Execution
 ---------
 
-![<img src="./image/example.PNG" width="200" />](./image/example.PNG)
-
-
+<img src="./image/example.PN" width="500">
